@@ -3,7 +3,7 @@ FROM openjdk:8-jre-alpine
 MAINTAINER Guillaume Simonneau <simonneaug@gmail.com>
 LABEL Description="elasticsearch searchguard search-guard"
 
-ENV ES_VERSION 6.0.0
+ENV ES_VERSION 5.6.0
 ENV DOWNLOAD_URL "https://artifacts.elastic.co/downloads/elasticsearch"
 ENV ES_TARBAL "${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz"
 ENV ES_TARBALL_ASC "${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz.asc"
@@ -27,7 +27,7 @@ RUN apk add --no-cache -t .build-deps gnupg openssl \
   && mv elasticsearch-$ES_VERSION /elasticsearch \
   && adduser -DH -s /sbin/nologin elasticsearch \
   && echo "===> Installing search-guard..." \
-  && /elasticsearch/bin/elasticsearch-plugin install -b "com.floragunn:search-guard-6:$ES_VERSION-17.beta1" \
+  && /elasticsearch/bin/elasticsearch-plugin install -b "com.floragunn:search-guard-5:$ES_VERSION-16" \
   && echo "===> Creating Elasticsearch Paths..." \
   && for path in \
   	/elasticsearch/config \
@@ -51,7 +51,6 @@ EXPOSE 9200 9300
 # env
 ENV CLUSTER_NAME="elasticsearch-default" \
     MINIMUM_MASTER_NODES=1 \
-    HOSTS="127.0.0.1, [::1]" \
     NODE_NAME=NODE-1 \
     NODE_MASTER=true \
     NODE_DATA=true \
@@ -64,12 +63,14 @@ ENV CLUSTER_NAME="elasticsearch-default" \
     KIBANA_PWD="changeme" \
     LOGSTASH_PWD="changeme" \
     BEATS_PWD="changeme" \
-    HEAP_SIZE="1g" \
+    HEAP_SIZE="256m" \
     CA_PWD="changeme" \
     TS_PWD="changeme" \
     KS_PWD="changeme" \
 		HTTP_SSL=true \
-    LOG_LEVEL=INFO
+    LOG_LEVEL=INFO \
+    MEMORY_LOCK false \
+    DISCOVERY_SERVICE elasticsearch-discovery
 
 COPY ./src/ /run/
 RUN chmod +x -R /run/
