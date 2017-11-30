@@ -69,8 +69,8 @@ ENV CLUSTER_NAME="elasticsearch-default" \
     KS_PWD="changeme" \
 		HTTP_SSL=true \
     LOG_LEVEL=INFO \
-    MEMORY_LOCK false \
-    DISCOVERY_SERVICE elasticsearch-discovery
+    MEMORY_LOCK=false \
+    DISCOVERY_SERVICE=elasticsearch-discovery
 
 COPY ./src/ /run/
 RUN chmod +x -R /run/
